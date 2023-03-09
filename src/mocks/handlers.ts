@@ -1,7 +1,6 @@
 import { rest } from "msw";
 import { faker } from "@faker-js/faker";
 import { RangePickerForm, SelectForm, TextAreaForm, TextForm } from "../components/atoms/form/types";
-import dayjs from "dayjs";
 
 const formSchema: (TextForm | SelectForm | RangePickerForm | TextAreaForm)[] = [
   {

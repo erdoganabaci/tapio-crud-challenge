@@ -2,12 +2,10 @@ import { memo, useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query';
 import { BaseUserPlan, UserPlan } from './types'
 
-import { Alert, Button, Form, Modal, Table, Tag, message, Divider } from 'antd';
+import { Alert, Button, Form, Modal, Table, message, Divider } from 'antd';
 import { GeneratedUserForm } from './GeneratedUserForm';
 import { FormSubmit } from './User';
-import dayjs from 'dayjs';
 
-const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 
 const { Column } = Table;
 
