@@ -25,13 +25,14 @@ describe('create user', () => {
   
     it('open create user modal and filled title click save button, compare recently created title', () => {
         // cy.wait(3000)
-        cy.get("#create-user").click();
+        cy.get("#create-post").click();
 
-        cy.get("#title").type("test user by cypress");
+        cy.get("#user").type("nicolas");
+        cy.get("#title").type("test title");
         cy.get("#save-button").click();
 
         cy.wait(3000)
-        cy.get("#user-table tbody tr:first td").first().should('have.text', 'test user by cypress');
+        cy.get("#user-table tbody tr:first td").first().should('have.text', 'nicolas');
     })
 
 

@@ -1,4 +1,4 @@
-# Tapio User CRUD Challenge
+# Tapio Post CRUD Challenge
 
 ## Available Scripts
 
@@ -14,15 +14,16 @@ Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 
-Here the user page where you can search for users, add users, edit users.
+Here the post page where you can search for posts, add posts, edit posts.
 
-!["User Page"](./images/eventPage.png)
+!["Post Page"](./images/postPage.png)
+!["Post Page"](./images/createPost.png)
+!["Post Page"](./images/successMessage.png)
+!["Post Page"](./images/editPost.png)
+!["Post Page"](./images/deltePost.png)
+!["Post Page"](./images/searchPost.png)
 
-!["User Page"](./images/eventCreate.png)
+Here the cypress test cases check if the user successfully created 
 
-!["User Page"](./images/successMessage.png)
-
-!["User Page"](./images/editEvent.png)
-
-!["User Page"](./images/searchEvent.png)
+!["Post Page"](./images/cypressTest.png)
 

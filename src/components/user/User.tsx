@@ -115,7 +115,7 @@ const User = memo(
             onSearch={handleSearch}
             style={{ width: "30%" }}
           />
-          <Button id="create-user" type="primary" className="button" onClick={showModal}>Create Post</Button>
+          <Button id="create-post" type="primary" className="button" onClick={showModal}>Create Post</Button>
         </div>
         <div className="table-container">
           <UserTable data={dataUsers} isFetching={isFetchingUsers} error={errorUsers} />
