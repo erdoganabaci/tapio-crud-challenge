@@ -24,7 +24,7 @@ const fetchUsers = async ({ queryKey }: any) => {
 };
 
 const createUser = async (user: BaseUserPlan) => {
-  const response = await fetch("/user", {
+  const response = await fetch("/createUser", {
     method: "POST",
     body: JSON.stringify(user),
     headers: {

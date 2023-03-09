@@ -71,7 +71,7 @@ export const handlers = [
     );
   }),
 
-  rest.post("/user", async (req, res, ctx) => {    
+  rest.post("/createUser", async (req, res, ctx) => {    
     const user = { id: users.length.toString(), ...(await req.json()) };
     // last user will be displayed first
     users = [user, ...users];
@@ -83,7 +83,7 @@ export const handlers = [
     );
   }),
   // update user and display it first
-  rest.put("/user/:id", async (req, res, ctx) => {
+  rest.put("/updateUser/:id", async (req, res, ctx) => {
     const userId = req.params.id;
     const updatedUser = await req.json();
     const userIndex = users.findIndex(user => user.id === userId);
@@ -105,6 +105,28 @@ export const handlers = [
       ctx.delay(1000)
     );
   }),
+
+  // remove user
+  rest.put("/deleteUser/:id", async (req, res, ctx) => {
+    const userId = req.params.id;
+    const userIndex = users.findIndex(user => user.id === userId);
+
+    if (userIndex === -1) {
+      return res(
+        ctx.status(400),
+        ctx.json({ error: `User with id ${userId} not found.` })
+      );
+    }
+
+    users.splice(userIndex,1); // remove the user
+    
+    return res(
+      ctx.status(200),
+      ctx.body(JSON.stringify(users)),
+      ctx.delay(1000)
+    );
+  }),
+
   // search users
   rest.get("/users/search", (req, res, ctx) => {
     const queryParams = new URLSearchParams(req.url.search);

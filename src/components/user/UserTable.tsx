@@ -12,13 +12,33 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 const { Column } = Table;
 
 const updateUser = async ({ userId, user }: { userId: string, user: BaseUserPlan }) => {
-  const response = await fetch(`/user/${userId}`, {
+  const response = await fetch(`/updateUser/${userId}`, {
     method: "PUT",
     body: JSON.stringify(user),
     headers: {
       "Content-Type": "application/json",
     },
   });
+
+
+  const userResponse: UserPlan = await response.json();
+
+  return {
+    ...userResponse,
+    startDate: new Date(userResponse.startDate),
+    endDate: new Date(userResponse.endDate),
+  };
+};
+
+const deleteUser = async ({ userId, user }: { userId: string, user: BaseUserPlan }) => {
+  const response = await fetch(`/deleteUser/${userId}`, {
+    method: "PUT",
+    body: JSON.stringify(user),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
 
   const userResponse: UserPlan = await response.json();
 
@@ -60,7 +80,12 @@ const UserTable = memo(
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
 
-    const mutation = useMutation(updateUser, {
+    const editMutation = useMutation(updateUser, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("users");
+      },
+    });
+    const delelteMutation = useMutation(deleteUser, {
       onSuccess: () => {
         queryClient.invalidateQueries("users");
       },
@@ -115,7 +140,7 @@ const UserTable = memo(
       };
       // Perform the API request to create the user
       try {
-        mutation.mutateAsync({ userId: currentUser!.id, user: userRequest });
+        editMutation.mutateAsync({ userId: currentUser!.id, user: userRequest });
         setIsSubmitting(false);
         setIsFailForm(false)
         form.resetFields()
@@ -130,6 +155,15 @@ const UserTable = memo(
     const onFinishFailed = () => {
       setIsFailForm(true)
     };
+
+    const onRemoveUser = async (user: UserPlan) => {
+      try {
+        delelteMutation.mutateAsync({ userId: user.id, user: user });
+        success(`${user.title} User successfully deleted`)
+      } catch (error) {
+        console.log("error during deletion", error)
+      }
+    }
 
     if (error) {
       return <div>{`Error: ${error}`}</div>
@@ -152,10 +186,23 @@ const UserTable = memo(
             title="Action"
             key="action"
             render={(text, user: UserPlan) => (
-              <a href="/" onClick={(e) => {
-                e.preventDefault()
-                showModal(user)
-              }}>Edit</a>
+              <div className="dropdown">
+                <button className="dropdown-toggle">
+                  More actions
+                  <i className="arrow-down"></i>
+                </button>
+                <div className="dropdown-menu">
+                  <a href="/" onClick={(e) => {
+                    e.preventDefault()
+                    showModal(user)
+                  }}>Edit</a>
+                  <a href="/" onClick={(e) => {
+                    e.preventDefault()
+                    onRemoveUser(user)
+                  }}>Delete</a>
+                </div>
+              </div>
+
             )}
           />
         </Table>
