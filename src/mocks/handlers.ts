@@ -108,15 +108,12 @@ export const handlers = [
   rest.get("/users/search", (req, res, ctx) => {
     const queryParams = new URLSearchParams(req.url.search);
     const q = queryParams.get("q")!;
-    console.log("here q",q);
-    console.log("here users",users)
     const filteredUsers = users.filter(
       user =>
         user.user.toLowerCase().includes(q) ||
         user.title.toLowerCase().includes(q) ||
         user.description.toLowerCase().includes(q)
     );
-  console.log("filteredUsers",filteredUsers)
     return res(
       ctx.status(200),
       ctx.body(JSON.stringify(filteredUsers)),
