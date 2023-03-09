@@ -20,14 +20,8 @@ const updateUser = async ({ userId, user }: { userId: string, user: BaseUserPlan
     },
   });
 
-
   const userResponse: UserPlan = await response.json();
-
-  return {
-    ...userResponse,
-    startDate: new Date(userResponse.startDate),
-    endDate: new Date(userResponse.endDate),
-  };
+  return userResponse
 };
 
 const deleteUser = async ({ userId, user }: { userId: string, user: BaseUserPlan }) => {
@@ -39,29 +33,11 @@ const deleteUser = async ({ userId, user }: { userId: string, user: BaseUserPlan
     },
   });
 
-
   const userResponse: UserPlan = await response.json();
-
-  return {
-    ...userResponse,
-    startDate: new Date(userResponse.startDate),
-    endDate: new Date(userResponse.endDate),
-  };
+  return userResponse
 };
 
-const displayUserType = (userGender: "generic" | "holiday") => {
-  switch (userGender) {
-    case "generic":
-      return <Tag color="purple">Generic</Tag>;
-    case "holiday":
-      return <Tag color="red">Holiday</Tag>;
-  }
-};
 
-function displayDate(date: string) {
-  const userDate = new Date(date);
-  return <span>{new Intl.DateTimeFormat().format(userDate)}</span>;
-}
 
 interface UserTableProps {
   data?: BaseUserPlan[];
@@ -117,25 +93,18 @@ const UserTable = memo(
     useEffect(() => {
       if (currentUser) {
         form.setFieldsValue({
+          user: currentUser.user,
           title: currentUser.title,
-          type: currentUser.type,
           description: currentUser.description,
-          startDateendDate: [dayjs(currentUser.startDate, DATE_FORMAT), dayjs(currentUser.endDate, DATE_FORMAT)]
         });
       }
     });
 
     const handleSubmit = async (values: FormSubmit) => {
       setIsSubmitting(true);
-      const type = values?.type ? values.type : "generic"
-      const startDate = values?.startDate?.endDate ? new Intl.DateTimeFormat().format(values.startDate.endDate[0]).toString() : new Date().toString()
-      const endDate = values?.startDate?.endDate ? new Intl.DateTimeFormat().format(values.startDate.endDate[1]).toString() : new Date().toString()
       const description = values?.description ? values.description : ""
       const userRequest = {
         ...values,
-        type,
-        startDate,
-        endDate,
         description
       };
       // Perform the API request to create the user
@@ -145,7 +114,7 @@ const UserTable = memo(
         setIsFailForm(false)
         form.resetFields()
         setIsModalOpen(false);
-        success(`${values.title} User successfully edited`)
+        success(`${values.user} User successfully edited`)
       } catch (error) {
         setIsSubmitting(false);
       }
@@ -173,14 +142,8 @@ const UserTable = memo(
         {contextHolder}
 
         <Table id="user-table" dataSource={data} loading={isFetching} rowKey="id">
+          <Column title="User" dataIndex="user"></Column>
           <Column title="Title" dataIndex="title"></Column>
-          <Column title="Type" dataIndex="type" render={displayUserType}></Column>
-          <Column
-            title="Start Date"
-            dataIndex="startDate"
-            render={displayDate}
-          ></Column>
-          <Column title="End Date" dataIndex="endDate" render={displayDate}></Column>
           <Column title="Description" dataIndex="description" />
           <Column
             title="Action"

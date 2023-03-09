@@ -8,17 +8,14 @@ import { BaseUserPlan, UserPlan } from './types';
 const { Search } = Input;
 
 export interface FormSubmit {
+  user: string;
   title: string;
-  type?: "generic" | "holiday";
-  startDate?: {
-    endDate: [Date, Date]
-  };
   description?: string;
 }
 
 const fetchUsers = async ({ queryKey }: any) => {
   const [, searchTerm] = queryKey;
-  const response = await fetch(`/users/search?q=${searchTerm}`);
+  const response = await fetch(`/users/search?q=${(searchTerm as string).toLowerCase()}`);
   const data: UserPlan[] = await response.json();
   return data;
 };
@@ -32,13 +29,9 @@ const createUser = async (user: BaseUserPlan) => {
     }
   }
   );
-  const userResponse: UserPlan = await response.json();
 
-  return {
-    ...userResponse,
-    startDate: new Date(userResponse.startDate),
-    endDate: new Date(userResponse.endDate),
-  };
+  const userResponse: UserPlan = await response.json();
+  return userResponse;
 
 };
 
@@ -86,16 +79,10 @@ const User = memo(
 
     const handleSubmit = async (values: FormSubmit) => {
       setIsSubmitting(true);
-      const type = values?.type ? values.type : "generic"
-      const startDate = values?.startDate?.endDate ? new Intl.DateTimeFormat().format(values.startDate.endDate[0]).toString() : new Date().toString()
-      const endDate = values?.startDate?.endDate ? new Intl.DateTimeFormat().format(values.startDate.endDate[1]).toString() : new Date().toString()
       const description = values?.description ? values.description : ""
 
       const userRequest = {
         ...values,
-        type,
-        startDate,
-        endDate,
         description
       };
       // Perform the API request to create the user
@@ -121,19 +108,19 @@ const User = memo(
 
         <div className="header">
           <Search
-            placeholder="Search users"
+            placeholder="Search posts"
             enterButton="Clean"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onSearch={handleSearch}
             style={{ width: "30%" }}
           />
-          <Button id="create-user" type="primary" className="button" onClick={showModal}>Create User</Button>
+          <Button id="create-user" type="primary" className="button" onClick={showModal}>Create Post</Button>
         </div>
         <div className="table-container">
           <UserTable data={dataUsers} isFetching={isFetchingUsers} error={errorUsers} />
 
-          <Modal title="Create new user" open={isModalOpen} onOk={form.submit} okText={"Save"} onCancel={handleCancel}
+          <Modal title="Create new post" open={isModalOpen} onOk={form.submit} okText={"Save"} onCancel={handleCancel}
 
             footer={[
               <Button key="back" onClick={handleCancel}>

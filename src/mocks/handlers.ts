@@ -5,31 +5,16 @@ import dayjs from "dayjs";
 
 const formSchema: (TextForm | SelectForm | RangePickerForm | TextAreaForm)[] = [
   {
-    name: "title",
-    label: "Title",
+    name: "user",
+    label: "User",
     component: "text",
     required: true,
   },
   {
-    name: "type",
-    component: "select",
-    label: "Type",
-    options: [
-      {
-        label: "Generic",
-        value: "generic",
-      },
-      {
-        label: "Holiday",
-        value: "holiday",
-      },
-    ],
-  },
-  {
-    name: ["startDate", "endDate"],
-    // name: "startDateEndDate", // auto generate name from array in Range Picker component
-    component: "range_picker",
-    label: "Date",
+    name: "title",
+    label: "Title",
+    component: "text",
+    required: true,
   },
   {
     name: "description",
@@ -39,17 +24,10 @@ const formSchema: (TextForm | SelectForm | RangePickerForm | TextAreaForm)[] = [
 ];
 
 let users = Array(12).fill(0).map((_, i) => {
-  const endDate = faker.date.between(new Date(), faker.date.future());
-  const daysDiff = dayjs(endDate).diff(new Date(), 'day');
-  const randomDaysToAdd = Math.floor(Math.random() * daysDiff);
-  const startDate = dayjs(endDate).subtract(randomDaysToAdd, 'day').toDate();
-  
   return {
     id: i.toString(),
+    user: faker.name.firstName(),
     title: faker.lorem.words(),
-    type: faker.helpers.arrayElement(["generic", "holiday"]),
-    startDate: startDate,
-    endDate: endDate,
     description: faker.lorem.words(),
   }
 });
@@ -131,13 +109,15 @@ export const handlers = [
   rest.get("/users/search", (req, res, ctx) => {
     const queryParams = new URLSearchParams(req.url.search);
     const q = queryParams.get("q")!;
-
+    console.log("here q",q);
+    console.log("here users",users)
     const filteredUsers = users.filter(
       user =>
-        user.title.includes(q) ||
-        user.description.includes(q)
+        user.user.toLowerCase().includes(q) ||
+        user.title.toLowerCase().includes(q) ||
+        user.description.toLowerCase().includes(q)
     );
-  
+  console.log("filteredUsers",filteredUsers)
     return res(
       ctx.status(200),
       ctx.body(JSON.stringify(filteredUsers)),
